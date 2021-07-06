@@ -1,16 +1,19 @@
 package com.hemebiotech.analytics;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 /**
  * Simple brute force implementation
  *
  */
-public class ReadSymptomDataFromFile implements ISymptomReader {
+public class ReadSymptomDataFromFile {
 
 	private String filepath;
 	
@@ -18,30 +21,42 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 	 * 
 	 * @param filepath a full or partial path to file with symptom strings in it, one per line
 	 */
+	
+	private static Map<String, Integer> symptomsList = new TreeMap<String, Integer>();
+	
+	
 	public ReadSymptomDataFromFile (String filepath) {
 		this.filepath = filepath;
 	}
 	
-	@Override
-	public List<String> GetSymptoms() {
-		ArrayList<String> result = new ArrayList<String>();
+	public Map<String, Integer> GetSymptoms() {
 		
-		if (filepath != null) {
-			try {
-				BufferedReader reader = new BufferedReader (new FileReader(filepath));
-				String line = reader.readLine();
+		try {
 				
-				while (line != null) {
-					result.add(line);
-					line = reader.readLine();
+			InputStream symptomsAdress = new FileInputStream(filepath);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(symptomsAdress));
+			
+			//This TreeMap get all the different symptoms as Keys and iterate them with each encounter in a file
+			
+			for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+				if(!symptomsList.containsKey(line)) {
+					symptomsList.put(line, 1);
+				} else {
+					int count = symptomsList.get(line);
+					symptomsList.put(line, count + 1);
 				}
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+				
+				for(Entry<String, Integer> elements : symptomsList.entrySet()) {
+					System.out.println(elements);
+				}
+				
+				reader.close();
+				
+		} catch(IOException e) {
+			System.out.println("file not found");
 		}
 		
-		return result;
+		return symptomsList;
 	}
-
 }
