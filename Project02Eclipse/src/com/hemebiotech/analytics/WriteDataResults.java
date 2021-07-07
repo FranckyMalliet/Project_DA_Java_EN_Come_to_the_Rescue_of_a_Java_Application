@@ -6,46 +6,47 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 
-public class WriteDataResults extends AnalyticsFolderAndFile{
+/**
+ *  This class has been made for writing data on a file
+ */
 
-	private Map<String, Integer> symptomsList;
+public class WriteDataResults {
 
-	public WriteDataResults(Map<String, Integer> symptomsList) {
-		this.symptomsList = symptomsList;
+	private final static Calendar GREGORIAN_CALENDAR = new GregorianCalendar();
+	private final Map<String, Integer> symptomsList;
+	private final AnalyticsFolderAndFile resultFile;
+
+	public WriteDataResults(Map<String, Integer> symptomsList, AnalyticsFolderAndFile resultFile) {
+		this.symptomsList = Objects.requireNonNull(symptomsList);
+		this.resultFile = Objects.requireNonNull(resultFile);
 	}
-	
+
 	public void getResults() {
-	
-	try {
-		
-		/**
-		 * 	Create a file and then write the data on it 
-		 *	Call the class AnalyticsFolderAndFile to create the file for the result  
-		 */
-		
-		FileWriter writer = new FileWriter (super.createFile(), true);
-		BufferedWriter bw = new BufferedWriter(writer);
-		
-		bw.newLine();
-		
-		for(Entry<String, Integer> elements : symptomsList.entrySet()) {
-			bw.write(elements.getKey() + " " + elements.getValue());
-			bw.newLine();
+
+		try (FileWriter writer = new FileWriter(resultFile.createFile(), true);
+				BufferedWriter buffer = new BufferedWriter(writer)) {
+
+			buffer.newLine();
+
+			// Write lines of data coming from the ordered map 
+			for (Entry<String, Integer> elements : symptomsList.entrySet()) {
+				buffer.write(elements.getKey() + " " + elements.getValue());
+				buffer.newLine();
+			}
+
+			buffer.newLine();
+			
+			//add a feature that give a record of the time the analyze has been made
+			buffer.write("Results done the " + GREGORIAN_CALENDAR.getTime());
+			
+			buffer.newLine();
+			buffer.newLine();
+			
+		} catch (IOException error) {
+			throw new IllegalStateException("File doesn't exist");
 		}
-		
-		Calendar c = new GregorianCalendar();
-		
-		bw.newLine();
-		bw.write("Results done the " + c.getTime());
-		System.out.println("Je vais ici");
-		
-		bw.close();
-		writer.close();
-		
-	} catch (IOException e) {
-		System.out.println("File does not exist");
 	}
-	}	
 }
