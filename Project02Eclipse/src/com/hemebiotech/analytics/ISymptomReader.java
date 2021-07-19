@@ -1,12 +1,18 @@
 package com.hemebiotech.analytics;
 
-import java.util.Map;
+import java.util.List;
 
 /**
- * This interface exist for long term development for this program
+ * Created for more robust code If the List has to change, it can use the
+ * interface ISymptomReader
  */
 
 public interface ISymptomReader {
 
-	Map<String,Integer> GetSymptoms ();
+	/**
+	 * read data files,
+	 * @return a list of Strings 
+	 */
+	
+	List<String> getSymptoms();
 }
