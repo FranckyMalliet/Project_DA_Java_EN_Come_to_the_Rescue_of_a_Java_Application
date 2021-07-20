@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class ReadSymptomDataFromFile implements ISymptomReader {
 
-	private final String filPath;
+	private final String filePath;
 
 	/**
 	 * @param filePath String of a file path,
@@ -21,7 +21,7 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 	 */
 	
 	public ReadSymptomDataFromFile(String filePath) {
-		this.filPath = Objects.requireNonNull(filePath);
+		this.filePath = Objects.requireNonNull(filePath);
 	}
 
 	/**
@@ -32,8 +32,8 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 	public List<String> getSymptoms() {
 		ArrayList<String> result = new ArrayList<String>();
 
-		if (filPath != null) {
-			try (BufferedReader reader = new BufferedReader(new FileReader(filPath));) {
+		if (filePath != null) {
+			try (BufferedReader reader = new BufferedReader(new FileReader(filePath));) {
 
 				String line = reader.readLine();
 
