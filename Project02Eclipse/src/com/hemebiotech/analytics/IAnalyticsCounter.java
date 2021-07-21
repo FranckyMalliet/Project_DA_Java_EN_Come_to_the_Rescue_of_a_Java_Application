@@ -7,7 +7,7 @@ import java.util.Map;
  * interface ISymptomReader
  */
 
-public interface ICounterSymptomData {
+public interface IAnalyticsCounter {
 	
 	/**
 	 * read a list,

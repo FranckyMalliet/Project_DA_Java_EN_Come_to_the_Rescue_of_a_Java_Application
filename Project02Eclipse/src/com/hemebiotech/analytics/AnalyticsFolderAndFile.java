@@ -49,6 +49,9 @@ public class AnalyticsFolderAndFile {
 		try {
 			if (!result.exists()) {
 				result.createNewFile();
+			} else {
+				result.delete();
+				result.createNewFile();
 			}
 		} catch (IOException error) {
 			throw new IllegalStateException("File doesn't exist");

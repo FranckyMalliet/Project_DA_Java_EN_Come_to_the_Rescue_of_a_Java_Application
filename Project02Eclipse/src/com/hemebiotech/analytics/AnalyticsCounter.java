@@ -2,55 +2,43 @@ package com.hemebiotech.analytics;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 /**
- * AnalyticsCounter extract informations from a file, 
- * These informations consists of counting the occurrences of a symptom
- * 
- * @author Francky Malliet
- **/
+ * CounterSymptomData put every symptoms in a Map and count them
+ */
 
-public class AnalyticsCounter {
+public class AnalyticsCounter implements IAnalyticsCounter {
+
+	private final List<String> listSymptoms;
 
 	/**
-	 * The application's entry point,
-	 * @param args an array of command-line arguments for the application
+	 * @param listSymptoms List of Strings,
+	 * Class Constructor
 	 */
 	
-	public static void main(String args[]) {
+	public AnalyticsCounter(List<String> listSymptoms) {
+		// Avoid sending nothing in parameter
+		this.listSymptoms = Objects.requireNonNull(listSymptoms);
+	}
 
-		/**
-		 * Call the class AnalyticsFolderAndFile to create the folder for the result,
-		 * You need to provide the full file path with the final file to be fully
-		 * operational
-		 */
+	/**
+	 * Create a TreeMap by reading a list,
+	 * @return a Map
+	 */
+	
+	public Map<String, Integer> countSymptoms() {
 
-		AnalyticsFolderAndFile folderAndFile = new AnalyticsFolderAndFile("C://AnalyticsCounter/results.out");
-		folderAndFile.createFolder();
+		// Create an ordered Map by using TreeMap
+		Map<String, Integer> symptomsList = new TreeMap<String, Integer>();
 
-		/**
-		 * Call the class ReadSymptonDataFromFile to read the data by giving his file path,
-		 * It will create a List with each symptoms written
-		 */
+		// if the symptom doesn't exist, create it If the symptom already exist,
+		// increment the value by one
+		for (String list : listSymptoms) {
+			symptomsList.put(list, symptomsList.getOrDefault(list, 0) + 1);
+		}
 
-		ReadSymptomDataFromFile reader = new ReadSymptomDataFromFile(
-				"E://Users/Francky Malliet/git/Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application/Project02Eclipse/symptoms.txt");
-		List<String> symptomsReader = reader.getSymptoms();
-
-		/**
-		 * Call the class CounterSymptomData to count the occurrences of each symptom in the List given by ReadSymptomDataFromFile,
-		 * It will create a Map with each symptoms and their occurrences
-		 */
-		
-		CounterSymptomData counter = new CounterSymptomData(symptomsReader);
-		Map<String, Integer> symptomsList = counter.countSymptoms(); 
-		
-		/**
-		 * Call the class WriteDataResults to create the results file, folderAndFile is
-		 * in parameter, giving the necessary file path to be create and stored,
-		 */
-
-		WriteDataResults results = new WriteDataResults(symptomsList, folderAndFile);
-		results.getResults();
+		return symptomsList;
 	}
 }
